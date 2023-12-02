@@ -16,3 +16,6 @@ name = "01b"
 
 [[bin]]
 name = "02a"
+
+[[bin]]
+name = "02b"
