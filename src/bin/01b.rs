@@ -1,4 +1,4 @@
-use std::io::{stdin, BufRead};
+use std::io::stdin;
 
 const NUMBERS: [(&str, i32); 10] = [
     ("zero", 0),
@@ -14,9 +14,7 @@ const NUMBERS: [(&str, i32); 10] = [
 ];
 
 fn main() {
-    let stdin = stdin().lock();
-
-    let lines = stdin
+    let lines = stdin()
         .lines()
         .map(|line| line.unwrap())
         .take_while(|line| !line.is_empty());
@@ -26,7 +24,7 @@ fn main() {
             let first = line
                 .char_indices()
                 .filter_map(|(i, c)| {
-                    if matches!(c, '0'..='9') {
+                    if c.is_ascii_digit() {
                         return Some(c as i32 - '0' as i32);
                     }
                     for (word, int) in NUMBERS {
@@ -43,7 +41,7 @@ fn main() {
                 .char_indices()
                 .rev()
                 .filter_map(|(i, c)| {
-                    if matches!(c, '0'..='9') {
+                    if c.is_ascii_digit() {
                         return Some(c as i32 - '0' as i32);
                     }
                     for (word, int) in NUMBERS {
