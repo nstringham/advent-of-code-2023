@@ -7,8 +7,12 @@ edition = "2021"
 
 [dependencies]
 
+
 [[bin]]
 name = "01a"
 
 [[bin]]
 name = "01b"
+
+[[bin]]
+name = "02a"
