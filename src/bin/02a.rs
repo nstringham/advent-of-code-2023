@@ -1,4 +1,4 @@
-use std::io::stdin;
+use advent_of_code_2023::stdin_lines;
 
 fn max_allowed(color: &str) -> Result<usize, &str> {
     match color {
@@ -10,10 +10,7 @@ fn max_allowed(color: &str) -> Result<usize, &str> {
 }
 
 fn main() {
-    let sum: usize = stdin()
-        .lines()
-        .map(|line| line.unwrap())
-        .take_while(|line| !line.is_empty())
+    let sum: usize = stdin_lines()
         .enumerate()
         .filter(|(_i, line)| {
             line.split(':').nth(1).unwrap().split(";").all(|handful| {

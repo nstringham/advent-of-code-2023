@@ -1,12 +1,7 @@
-use std::io::stdin;
+use advent_of_code_2023::stdin_lines;
 
 fn main() {
-    let lines = stdin()
-        .lines()
-        .map(|line| line.unwrap())
-        .take_while(|line| !line.is_empty());
-
-    let sum: i32 = lines
+    let sum: i32 = stdin_lines()
         .map(|line| {
             let first = line.chars().find(|c| c.is_ascii_digit()).unwrap();
             let last = line.chars().rev().find(|c| c.is_ascii_digit()).unwrap();

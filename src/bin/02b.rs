@@ -1,4 +1,4 @@
-use std::io::stdin;
+use advent_of_code_2023::stdin_lines;
 
 struct Bag {
     red: usize,
@@ -32,10 +32,7 @@ impl Bag {
 }
 
 fn main() {
-    let sum: usize = stdin()
-        .lines()
-        .map(|line| line.unwrap())
-        .take_while(|line| !line.is_empty())
+    let sum: usize = stdin_lines()
         .map(|line| {
             let mut bag = Bag::default();
             let handfuls = line.split(':').nth(1).unwrap().split(";");

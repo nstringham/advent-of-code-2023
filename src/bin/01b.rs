@@ -1,4 +1,4 @@
-use std::io::stdin;
+use advent_of_code_2023::stdin_lines;
 
 const NUMBERS: [(&str, i32); 10] = [
     ("zero", 0),
@@ -14,12 +14,7 @@ const NUMBERS: [(&str, i32); 10] = [
 ];
 
 fn main() {
-    let lines = stdin()
-        .lines()
-        .map(|line| line.unwrap())
-        .take_while(|line| !line.is_empty());
-
-    let sum: i32 = lines
+    let sum: i32 = stdin_lines()
         .map(|line| {
             let first = line
                 .char_indices()
