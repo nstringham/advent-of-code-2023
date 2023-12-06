@@ -1,65 +1,68 @@
-use std::{
-    iter::{Enumerate, Peekable},
-    str::Chars,
-};
-
 use advent_of_code_2023::stdin_lines;
 
-#[derive(Debug)]
-enum Cell {
-    Symbol(usize),
-    Digit(usize, usize, usize),
+fn is_digit(byte: u8) -> bool {
+    matches!(byte, b'0'..=b'9')
 }
 
-struct CellParser<'a> {
-    inner: Peekable<Enumerate<Chars<'a>>>,
-}
-
-impl<'a> CellParser<'a> {
-    pub fn parse(string: &'a str) -> Self {
-        Self {
-            inner: string.chars().enumerate().peekable(),
-        }
+fn extract_number(row: &mut [u8], index: usize) -> i32 {
+    if !is_digit(row[index]) {
+        return 0;
     }
+
+    let start = (0..index).rev().find(|&i| !is_digit(row[i])).unwrap_or(0) + 1;
+
+    let end = (index + 1..row.len())
+        .find(|&i| !is_digit(row[i]))
+        .unwrap_or(0)
+        - 1;
+
+    row[start..=end].iter_mut().fold(0, |number, byte| {
+        let digit = *byte - b'0';
+        *byte = b'.';
+        number * 10 + digit as i32
+    })
 }
 
-impl<'a> Iterator for CellParser<'a> {
-    type Item = Cell;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            let (index, char) = self.inner.next()?;
-            match char {
-                '.' => continue,
-                '0'..='9' => {
-                    let mut number = char as usize - '0' as usize;
-                    let mut ending_index = index;
-                    while matches!(self.inner.peek(), Some((_, '0'..='9'))) {
-                        let (index, char) = self.inner.next().unwrap();
-                        number = number * 10 + char as usize - '0' as usize;
-                        ending_index = index
-                    }
-                    break Some(Cell::Digit(index, ending_index, number));
-                }
-                _ => break Some(Cell::Symbol(index)),
-            };
-        }
-    }
+fn extract_from_row(row: &mut [u8]) -> i32 {
+    (0..row.len())
+        .filter_map(|i| match row[i] {
+            b'0'..=b'9' => None,
+            b'.' => None,
+            _ => Some(extract_number(row, i + 1) + extract_number(row, i + 1)),
+        })
+        .sum()
 }
 
-fn main() {
-    let lines: Vec<Vec<Cell>> = stdin_lines()
-        .map(|line| CellParser::parse(&line).collect())
-        .collect();
+fn extract_from_rows(row1: &mut [u8], row2: &mut [u8]) -> i32 {
+    assert_eq!(row1.len(), row2.len());
 
-    let sum: usize = lines
-        .into_iter()
-        .flat_map(|line| line.into_iter())
-        .filter_map(|cell| match cell {
-            Cell::Digit(_, _, number) => Some(number),
-            _ => None,
+    let total1: i32 = (0..row1.len())
+        .filter_map(|i| match row1[i] {
+            b'0'..=b'9' => None,
+            b'.' => None,
+            _ => Some(
+                extract_number(row2, i - 1) + extract_number(row2, i) + extract_number(row2, i + 1),
+            ),
         })
         .sum();
 
-    println!("{sum}");
+    let total2: i32 = (0..row2.len())
+        .filter_map(|i| match row2[i] {
+            b'0'..=b'9' => None,
+            b'.' => None,
+            _ => Some(
+                extract_number(row1, i - 1) + extract_number(row1, i) + extract_number(row1, i + 1),
+            ),
+        })
+        .sum();
+
+    total1 + total2
+}
+
+fn main() {
+    let mut rows = stdin_lines().map(|line| line.into_bytes());
+
+    let mut total = 0;
+
+    // println!("{sum}");
 }
